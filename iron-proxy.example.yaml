@@ -241,6 +241,26 @@ transforms:
         #   rules:
         #     - host: "api.openai.com"
 
+  # ChatGPT/Codex account authentication for Codex clients. The workload sends
+  # only the placeholder CODEX_ACCESS_TOKEN bearer value; iron-proxy resolves
+  # the real Codex Agent Identity JWT, registers a task, and injects
+  # AgentAssertion auth for chatgpt.com/backend-api/codex requests. The
+  # placeholder is matched as a substring of the configured header value, so
+  # keep it distinctive enough not to collide with real bearer tokens or with
+  # placeholders used by other transforms.
+  # - name: codex_agent_identity
+  #   config:
+  #     identities:
+  #       - source:
+  #           type: env
+  #           var: CODEX_ACCESS_TOKEN
+  #         rules:
+  #           - host: "chatgpt.com"
+  #             methods: ["GET", "POST"]
+  #             paths: ["/backend-api/codex/*"]
+  #         header: "Authorization"
+  #         placeholder: "CODEX_ACCESS_TOKEN"
+
   # GCP service account authentication. Signs a JWT with the configured
   # keyfile, exchanges it at Google's token endpoint for a short-lived OAuth2
   # access token, and sets Authorization: Bearer on matching requests. Tokens
